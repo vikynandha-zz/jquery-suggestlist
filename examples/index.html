@@ -22,7 +22,9 @@
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
         <script src="../js/jquery-suggestlist.min.js" type="text/javascript"></script>
         <script>
-            $( '#inputbox' ).durationpicker();
+            $( '#inputbox' ).suggestlist({
+                list: ['15 min', '30 min', '1 hr', '2 hr', '3 hr']
+            });
         </script>
     </body>
 </html>

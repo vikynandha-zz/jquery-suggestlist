@@ -1,16 +1,16 @@
 ( function( $ ) {
 
-	function DurationPicker( element, options ) {
+	function Suggestlist( element, options ) {
 		var that = this;
 		this.$element = $( element ).attr( 'autocomplete', 'off' );
-		this.options = $.extend( $.fn.durationpicker.defaults, options );
-		this.picker = DPGlobal.render( options ).on( 'click.durationpicker', 'li', $.proxy( this.click, this ) );
+		this.options = $.extend( $.fn.suggestlist.defaults, options );
+		this.picker = DPGlobal.render( options ).on( 'click.suggestlist', 'li', $.proxy( this.click, this ) );
 		this.isInput = this.$element.is( 'input' );
 
 		this.picker.width( this.$element.outerWidth() );
 		$( document ).on( 'mousedown', function ( event ) {
 			// Clicked outside the datepicker, hide it
-			if ( $( event.target ).closest( '.durationpicker' ).length == 0 ) {
+			if ( $( event.target ).closest( '.suggestlist' ).length == 0 ) {
 				that.hide();
 			}
 		});
@@ -23,12 +23,12 @@
 		}
 	}
 
-	DurationPicker.prototype = {
-		constructor: DurationPicker,
+	Suggestlist.prototype = {
+		constructor: Suggestlist,
 
         click: function( event ) {
-            this.picker.find( 'li.durationpicker-selected' ).removeClass( 'durationpicker-selected' );
-            $( event.currentTarget ).addClass( 'durationpicker-selected' );
+            this.picker.find( 'li.suggestlist-selected' ).removeClass( 'suggestlist-selected' );
+            $( event.currentTarget ).addClass( 'suggestlist-selected' );
             this.updateVal();
         },
 
@@ -87,7 +87,7 @@
 
 		selectNext: function() {
 			var $selected, $target;
-			$selected = this.picker.find( 'li.durationpicker-selected' ).first();
+			$selected = this.picker.find( 'li.suggestlist-selected' ).first();
 
 			if ( $selected.length === 0 ) {
 				$target = this.picker.find( 'li' ).first();
@@ -95,14 +95,14 @@
 				if ( $selected.is( ':last-child' ) ) {
 					return;
 				}
-				$target = $selected.removeClass( 'durationpicker-selected' ).next();
+				$target = $selected.removeClass( 'suggestlist-selected' ).next();
 			}
-			$target.addClass( 'durationpicker-selected' );
+			$target.addClass( 'suggestlist-selected' );
 		},
 
 		selectPrev: function() {
 			var $selected, $target;
-			$selected = this.picker.find( 'li.durationpicker-selected' ).first();
+			$selected = this.picker.find( 'li.suggestlist-selected' ).first();
 
 			if ( $selected.length === 0 ) {
 				$target = this.picker.find( 'li' ).last();
@@ -110,13 +110,13 @@
 				if ( $selected.is( ':first-child' ) ) {
 					return;
 				}
-				$target = $selected.removeClass( 'durationpicker-selected' ).prev();
+				$target = $selected.removeClass( 'suggestlist-selected' ).prev();
 			}
-			$target.addClass( 'durationpicker-selected' );
+			$target.addClass( 'suggestlist-selected' );
 		},
 
 		updateVal: function( event ) {
-			this.$element.val( this.picker.find( 'li.durationpicker-selected' ).text() );
+			this.$element.val( this.picker.find( 'li.suggestlist-selected' ).text() );
 			this.hide();
 		},
 
@@ -128,17 +128,17 @@
 
 			var val = $.trim( this.$element.val() ).replace(/\s+/, ' '),
 			    $li = this.picker.find( 'li' ),
-			    $selected = $li.filter( '.durationpicker-selected' ).first();
+			    $selected = $li.filter( '.suggestlist-selected' ).first();
 			if ( val === $selected.text() ) {
 				return;
 			}
 			if ( $.inArray( val, this.options.list ) === -1 ) {
 				return false;
 			}
-			$selected.removeClass( 'durationpicker-selected' );
+			$selected.removeClass( 'suggestlist-selected' );
 			this.picker.find( 'li' ).each( function( i, elem ) {
 				if ( $( elem ).text() === val ) {
-					$( elem ).addClass( 'durationpicker-selected' );
+					$( elem ).addClass( 'suggestlist-selected' );
 				}
 			} );
             this.show();
@@ -149,7 +149,7 @@
 	var DPGlobal ={
 		render: function( options ) {
 			var $list = $( '<ul/>' ), i;
-			$list.addClass( 'durationpicker' )
+			$list.addClass( 'suggestlist' )
 				.css( {
 					zIndex: getClosestZIndex( this.$element ),
 				} );
@@ -157,7 +157,7 @@
 			for( i = 0; i < options.list.length; i++ ) {
 				$list.append( '<li>' + options.list[i] + '</li>' );
 				if ( i === 0 ) {
-					$list.addClass( 'durationpicker-selected' );
+					$list.addClass( 'suggestlist-selected' );
 				}
 			}
 			$list.appendTo( 'body' );
@@ -174,17 +174,17 @@
 	};
 
 
-	/* Add durationpicker to jQuery */
-	$.fn.durationpicker = function( method ) {
+	/* Add suggestlist to jQuery */
+	$.fn.suggestlist = function( option) {
 		var args = Array.apply(null, arguments);
 		args.shift();
 		return this.each( function () {
 			var $this = $( this ),
-				data = $this.data( 'durationpicker' ),
+				data = $this.data( 'suggestlist' ),
 				options = typeof option == 'object' && option;
 			if ( !data ) {
-				data = new DurationPicker( this, $.extend({}, $.fn.durationpicker.defaults, options ) );
-				$this.data( 'durationpicker', data);
+				data = new Suggestlist( this, $.extend({}, $.fn.suggestlist.defaults, options ) );
+				$this.data( 'suggestlist', data);
 			}
 			if (typeof option == 'string' && typeof data[option] == 'function') {
 				data[option].apply(data, args);
@@ -192,8 +192,8 @@
 		});
 	}
 
-	$.fn.durationpicker.defaults = {
-		list: ['15 min', '30 min', '1 hr', '2 hr']
+	$.fn.suggestlist.defaults = {
+		list: []
 	};
 
 } ) ( jQuery );
