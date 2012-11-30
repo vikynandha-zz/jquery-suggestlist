@@ -2,21 +2,22 @@
 
 	function Suggestlist( element, options ) {
 		var that = this;
-		this.$element = $( element ).attr( 'autocomplete', 'off' );
+		this.element = $( element ).attr( 'autocomplete', 'off' ).addClass( 'suggestlist-input' );
 		this.options = $.extend( $.fn.suggestlist.defaults, options );
-		this.picker = DPGlobal.render( options ).on( 'click.suggestlist', 'li', $.proxy( this.click, this ) );
-		this.isInput = this.$element.is( 'input' );
+		this.picker = DPGlobal.render( options ).on( 'click.suggestlist', 'li', $.proxy( this.clickLi, this ) );
+		this.isInput = this.element.is( 'input' );
 
-		this.picker.width( this.$element.outerWidth() );
+		this.picker.width( this.element.outerWidth() );
 		$( document ).on( 'mousedown', function ( event ) {
 			// Clicked outside the datepicker, hide it
-			if ( $( event.target ).closest( '.suggestlist' ).length == 0 ) {
+			if ( $( event.target ).closest( '.suggestlist, .suggestlist-input' ).length == 0 ) {
 				that.hide();
 			}
 		});
 		if ( this.isInput ) {
-			this.$element.on( {
+			this.element.on( {
 				focus: $.proxy( this.show, this ),
+				click: $.proxy( this.click, this ),
 				keydown: $.proxy( this.keydown, this ),
 				keyup: $.proxy( this.updateLi, this )
 			} );
@@ -26,11 +27,18 @@
 	Suggestlist.prototype = {
 		constructor: Suggestlist,
 
-        click: function( event ) {
-            this.picker.find( 'li.suggestlist-selected' ).removeClass( 'suggestlist-selected' );
-            $( event.currentTarget ).addClass( 'suggestlist-selected' );
-            this.updateVal();
-        },
+		click: function() {
+			if ( this.picker.is( ':hidden' ) ) {
+				this.show();
+			}
+		},
+
+		clickLi: function( event ) {
+			this.picker.find( 'li.suggestlist-selected' ).removeClass( 'suggestlist-selected' );
+			$( event.currentTarget ).addClass( 'suggestlist-selected' );
+			this.element[0].focus();
+			this.updateVal();
+		},
 
 		keydown: function( event ) {
 			switch( event.keyCode ) {
@@ -56,7 +64,7 @@
 				this.selectNext();
 				break;
 			case 13: // Enter
-				this.updateVal( event );
+				this.updateVal();
 				event.preventDefault();
 				break;
 			}
@@ -78,10 +86,10 @@
 		},
 
 		place: function() {
-			var offset = this.$element.offset();
+			var offset = this.element.offset();
 			this.picker.css( {
 				left: offset.left,
-				top: offset.top + this.$element.outerHeight()
+				top: offset.top + this.element.outerHeight()
 			} );
 		},
 
@@ -115,8 +123,8 @@
 			$target.addClass( 'suggestlist-selected' );
 		},
 
-		updateVal: function( event ) {
-			this.$element.val( this.picker.find( 'li.suggestlist-selected' ).text() );
+		updateVal: function() {
+			this.element.val( this.picker.find( 'li.suggestlist-selected' ).text() );
 			this.hide();
 		},
 
@@ -126,9 +134,9 @@
 				return;
 			}
 
-			var val = $.trim( this.$element.val() ).replace(/\s+/, ' '),
-			    $li = this.picker.find( 'li' ),
-			    $selected = $li.filter( '.suggestlist-selected' ).first();
+			var val = $.trim( this.element.val() ).replace(/\s+/, ' '),
+				$li = this.picker.find( 'li' ),
+				$selected = $li.filter( '.suggestlist-selected' ).first();
 			if ( val === $selected.text() ) {
 				return;
 			}
@@ -141,7 +149,7 @@
 					$( elem ).addClass( 'suggestlist-selected' );
 				}
 			} );
-            this.show();
+			this.show();
 		}
 
 	};
@@ -151,7 +159,7 @@
 			var $list = $( '<ul/>' ), i;
 			$list.addClass( 'suggestlist' )
 				.css( {
-					zIndex: getClosestZIndex( this.$element ),
+					zIndex: getClosestZIndex( this.element ),
 				} );
 
 			for( i = 0; i < options.list.length; i++ ) {
