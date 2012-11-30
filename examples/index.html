@@ -3,8 +3,16 @@
     <head>
         <meta charset="utf-8">
         <title>jQuery duration-picker demo</title>
-        <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css"/>
-        <link rel="stylesheet" href="../css/durationpicker.css"/>
+        <link rel="stylesheet" href="../css/suggestlist.css"/>
+        <style>
+            #inputbox {
+                display: block;
+                margin: auto;
+                width: 210px;
+                height: 20px;
+                padding: 4px;
+            }
+        </style>
     </head>
     <body>
         <!--div class="modal hide fade" id="my-modal">
@@ -31,16 +39,14 @@
             <button id="trigger-bootstrap-modal">Show bootstrap modal</button>
         </div-->
 
-        <div class="container">
-            <form style="margin-top:100px;">
-                <input type="text" id="durationpicker">
-            </form>
-        </div>
+        <form style="margin-top:100px;">
+            <input type="text" id="inputbox">
+        </form>
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
-        <script src="../js/duration-picker.js" type="text/javascript"></script>
+        <script src="../js/jquery-suggestlist.js" type="text/javascript"></script>
         <script>
-            $( '#durationpicker' ).durationpicker();
+            $( '#inputbox' ).durationpicker();
         </script>
     </body>
 </html>
