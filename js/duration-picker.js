@@ -17,7 +17,8 @@
 		if ( this.isInput ) {
 			this.$element.on( {
 				focus: $.proxy( this.show, this ),
-				keydown: $.proxy( this.keydown, this )
+				keydown: $.proxy( this.keydown, this ),
+				keyup: $.proxy( this.updateLi, this )
 			} );
 		}
 	}
@@ -28,7 +29,7 @@
         click: function( event ) {
             this.picker.find( 'li.durationpicker-selected' ).removeClass( 'durationpicker-selected' );
             $( event.currentTarget ).addClass( 'durationpicker-selected' );
-            this.update();
+            this.updateVal();
         },
 
 		keydown: function( event ) {
@@ -55,7 +56,7 @@
 				this.selectNext();
 				break;
 			case 13: // Enter
-				this.update( event );
+				this.updateVal( event );
 				event.preventDefault();
 				break;
 			}
@@ -114,9 +115,32 @@
 			$target.addClass( 'durationpicker-selected' );
 		},
 
-		update: function( event ) {
+		updateVal: function( event ) {
 			this.$element.val( this.picker.find( 'li.durationpicker-selected' ).text() );
 			this.hide();
+		},
+
+		updateLi: function( event ) {
+			var keyVal = String.fromCharCode( event.keyCode ).toLowerCase();
+			if ( event.ctrlKey || ! /^[0-9a-z ]$/.test( keyVal ) ) {
+				return;
+			}
+
+			var val = $.trim( this.$element.val() ).replace(/\s+/, ' '),
+			    $li = this.picker.find( 'li' ),
+			    $selected = $li.filter( '.durationpicker-selected' ).first();
+			if ( val === $selected.text() ) {
+				return;
+			}
+			if ( $.inArray( val, this.options.list ) === -1 ) {
+				return false;
+			}
+			$selected.removeClass( 'durationpicker-selected' );
+			this.picker.find( 'li' ).each( function( i, elem ) {
+				if ( $( elem ).text() === val ) {
+					$( elem ).addClass( 'durationpicker-selected' );
+				}
+			} );
 		}
 
 	};
