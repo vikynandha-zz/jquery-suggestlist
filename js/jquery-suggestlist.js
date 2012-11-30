@@ -141,6 +141,7 @@
 					$( elem ).addClass( 'durationpicker-selected' );
 				}
 			} );
+            this.show();
 		}
 
 	};
