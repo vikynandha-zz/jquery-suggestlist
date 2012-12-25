@@ -159,7 +159,7 @@
 			var $list = $( '<ul/>' ), i;
 			$list.addClass( 'suggestlist' )
 				.css( {
-					zIndex: getClosestZIndex( this.element ),
+					zIndex: getClosestZIndex( this.element )
 				} );
 
 			for( i = 0; i < options.list.length; i++ ) {
