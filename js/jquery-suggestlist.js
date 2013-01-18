@@ -21,6 +21,7 @@
 				keydown: $.proxy( this.keydown, this ),
 				keyup: $.proxy( this.updateLi, this )
 			} );
+			this.updateLi();
 		}
 	}
 
@@ -129,9 +130,11 @@
 		},
 
 		updateLi: function( event ) {
-			var keyVal = String.fromCharCode( event.keyCode ).toLowerCase();
-			if ( event.ctrlKey || ! /^[0-9a-z ]$/.test( keyVal ) ) {
-				return;
+			if ( event ) {
+				var keyVal = String.fromCharCode( event.keyCode ).toLowerCase();
+				if ( event.ctrlKey || ! /^[0-9a-z ]$/.test( keyVal ) ) {
+					return;
+				}
 			}
 
 			var val = $.trim( this.element.val() ).replace(/\s+/, ' '),
@@ -149,7 +152,9 @@
 					$( elem ).addClass( 'suggestlist-selected' );
 				}
 			} );
-			this.show();
+			if ( event ) {
+				this.show();
+			}
 		}
 
 	};
