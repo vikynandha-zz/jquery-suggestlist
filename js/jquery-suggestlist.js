@@ -65,8 +65,10 @@
 				this.selectNext();
 				break;
 			case 13: // Enter
-				this.updateVal();
-				event.preventDefault();
+				if ( this.picker.is( ':visible' ) ) {
+					this.updateVal();
+					event.preventDefault();
+				}
 				break;
 			}
 		},
