@@ -45,6 +45,18 @@
             });
             $( '#my-modal' ).on( 'hidden', function() {
                 $( this ).find( 'form' )[0].reset();
+                
+               /***Start of Issue #1)***/
+               $('ul.suggestlist').find('li').removeClass('suggestlist-selected');
+               
+                var objectData = $('ul.suggestlist li');
+                $.each(objectData, function() { 
+                    if($(this).text() == $('#inputbox').val())
+                    { 
+                        $(this).addClass('suggestlist-selected');
+                    }
+                });
+                 /***End of Issue #1)***/
             } );
         </script>
     </body>
