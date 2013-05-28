@@ -6,9 +6,14 @@
 		this.options = $.extend( $.fn.suggestlist.defaults, options );
 		this.picker = DPGlobal.render( options ).on( 'click.suggestlist', 'li', $.proxy( this.clickLi, this ) );
 		this.isInput = this.element.is( 'input' );
+		this.destroy = function() {
+			that.hide();
+			that.picker.remove();
+			that.element.off('.suggestlist').removeData( 'suggestlist' )
+		}
 
 		this.picker.width( this.element.outerWidth() );
-		$( document ).on( 'mousedown', function ( event ) {
+		$( document ).on( 'mousedown.suggestlist', function ( event ) {
 			// Clicked outside the datepicker, hide it
 			if ( $( event.target ).closest( '.suggestlist, .suggestlist-input' ).length == 0 ) {
 				that.hide();
@@ -16,10 +21,10 @@
 		});
 		if ( this.isInput ) {
 			this.element.on( {
-				focus: $.proxy( this.show, this ),
-				click: $.proxy( this.click, this ),
-				keydown: $.proxy( this.keydown, this ),
-				keyup: $.proxy( this.updateLi, this )
+				'focus.suggestlist': $.proxy( this.show, this ),
+				'click.suggestlist': $.proxy( this.click, this ),
+				'keydown.suggestlist': $.proxy( this.keydown, this ),
+				'keyup.suggestlist': $.proxy( this.updateLi, this )
 			} );
 			this.updateLi();
 		}
@@ -76,7 +81,7 @@
 		show: function( event ) {
 			this.picker.show();
 			this.place();
-			$( window ).on( 'resize', $.proxy( this.place, this ) );
+			$( window ).on( 'resize.suggestlist', $.proxy( this.place, this ) );
 			if ( event ) {
 				event.stopPropagation();
 				event.preventDefault();
