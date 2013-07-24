@@ -26,6 +26,9 @@
 				'keydown.suggestlist': $.proxy( this.keydown, this ),
 				'keyup.suggestlist': $.proxy( this.updateLi, this )
 			} );
+			this.element.parent().on( {
+				'reset': $.proxy( this.resetDefault, this )
+			} );
 			this.updateLi();
 		}
 	}
@@ -162,6 +165,17 @@
 			if ( event ) {
 				this.show();
 			}
+		},
+
+		resetDefault: function(event){
+			that = this;
+			this.picker.find( 'li.suggestlist-selected' ).removeClass( 'suggestlist-selected' );
+			this.picker.find( 'li' )
+				.filter(function(){ return $(this).text() == that.element.attr('value') })
+				.first()
+				.addClass( 'suggestlist-selected' );
+			this.element[0].focus();
+			this.updateVal();
 		}
 
 	};
