@@ -147,19 +147,18 @@
 				}
 			}
 
-			var val = $.trim( this.element.val() ).replace(/\s+/, ' '),
+			var val = this.element.val().replace(/^\s+/,'').replace(/\s+/, ' '),
 				$li = this.picker.find( 'li' ),
 				$selected = $li.filter( '.suggestlist-selected' ).first();
 			if ( val === $selected.text() ) {
 				return;
 			}
-			if ( $.inArray( val, this.options.list ) === -1 ) {
-				return false;
-			}
-			$selected.removeClass( 'suggestlist-selected' );
+			
 			this.picker.find( 'li' ).each( function( i, elem ) {
-				if ( $( elem ).text() === val ) {
+				if ( $( elem ).text().indexOf(val) === 0 ) {
+					$selected.removeClass( 'suggestlist-selected' );
 					$( elem ).addClass( 'suggestlist-selected' );
+					return false;
 				}
 			} );
 			if ( event ) {
