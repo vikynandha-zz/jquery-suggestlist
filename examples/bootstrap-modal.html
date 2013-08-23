@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
     <head>
         <meta charset="utf-8">
         <title>jQuery suggestlist demo</title>
@@ -33,9 +33,9 @@
             <button id="trigger-bootstrap-modal">Show modal</button>
         </div>
 
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
-        <script src="http://getbootstrap.com/2.3.2/assets/js/bootstrap-modal.js" type="text/javascript"></script>
-        <script src="../js/jquery-suggestlist.js" type="text/javascript"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script src="http://getbootstrap.com/2.3.2/assets/js/bootstrap-modal.js"></script>
+        <script src="../js/jquery-suggestlist.min.js"></script>
         <script>
             $( '#inputbox' ).suggestlist({
                 list: ['15 min', '30 min', '1 hr', '2 hr', '3 hr']
@@ -45,6 +45,7 @@
             });
             $( '#my-modal' ).on( 'hidden', function() {
                 $( this ).find( 'form' )[0].reset();
+                $('.suggestlist').reset();
             } );
         </script>
     </body>
