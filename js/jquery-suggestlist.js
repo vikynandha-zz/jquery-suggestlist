@@ -4,12 +4,20 @@
 		var that = this;
 		this.element = $( element ).attr( 'autocomplete', 'off' ).addClass( 'suggestlist-input' );
 		this.options = $.extend( $.fn.suggestlist.defaults, options );
-		this.picker = DPGlobal.render( options ).on( 'click.suggestlist', 'li', $.proxy( this.clickLi, this ) );
 		this.isInput = this.element.is( 'input' );
+		if(this.isInput){
+			DPGlobal.defaultValue = this.element.attr('value');
+		}
+		this.picker = DPGlobal.render( options ).on( 'click.suggestlist', 'li', $.proxy( this.clickLi, this ) );
+
 		this.destroy = function() {
 			that.hide();
 			that.picker.remove();
 			that.element.off('.suggestlist').removeData( 'suggestlist' )
+		}
+
+		$.fn.reset = function(){
+			that.reset();
 		}
 
 		this.picker.width( this.element.outerWidth() );
@@ -30,8 +38,14 @@
 		}
 	}
 
+
 	Suggestlist.prototype = {
 		constructor: Suggestlist,
+
+		reset: function(){
+			this.picker.find( 'li.suggestlist-selected' ).removeClass( 'suggestlist-selected' );
+			this.updateLi();
+		},
 
 		click: function() {
 			if ( this.picker.is( ':hidden' ) ) {
@@ -138,25 +152,31 @@
 
 		updateLi: function( event ) {
 			if ( event ) {
-				var keyVal = String.fromCharCode( event.keyCode ).toLowerCase();
-				if ( event.ctrlKey || ! /^[0-9a-z ]$/.test( keyVal ) ) {
+				var keyCode = event.keyCode;
+				var keyVal = String.fromCharCode( keyCode ).toLowerCase();
+				if ( (keyCode !== 8 && keyCode !== 46 ) && (event.ctrlKey || ! /^[0-9a-z ]$/.test( keyVal ) ) ) {
 					return;
 				}
 			}
-
+			
 			var val = $.trim( this.element.val() ).replace(/\s+/, ' '),
 				$li = this.picker.find( 'li' ),
 				$selected = $li.filter( '.suggestlist-selected' ).first();
+			
 			if ( val === $selected.text() ) {
 				return;
-			}
-			if ( $.inArray( val, this.options.list ) === -1 ) {
-				return false;
-			}
-			$selected.removeClass( 'suggestlist-selected' );
+			}			
+			var firstMatch = true;
 			this.picker.find( 'li' ).each( function( i, elem ) {
-				if ( $( elem ).text() === val ) {
+				//var elemText = $.trim( $(elem).text() ).replace(/\s+/, ''); //can be use to match the value irrespective of ' '
+				var elemText = $( elem ).text();
+				if ( elemText === val ) {
 					$( elem ).addClass( 'suggestlist-selected' );
+				} else if( firstMatch && val && val.length > 0 && new RegExp('^'+val).test( elemText ) ){
+					$( elem ).addClass( 'suggestlist-selected' );
+					firstMatch = false;
+				} else{
+					$( elem ).removeClass( 'suggestlist-selected' );
 				}
 			} );
 			if ( event ) {
@@ -176,13 +196,14 @@
 
 			for( i = 0; i < options.list.length; i++ ) {
 				$list.append( '<li>' + options.list[i] + '</li>' );
-				if ( i === 0 ) {
+				if ( options.list[i] === DPGlobal.defaultValue ) {
 					$list.addClass( 'suggestlist-selected' );
 				}
 			}
 			$list.appendTo( 'body' );
 			return $list;
-		}
+		},
+		defaultValue : undefined
 	};
 
 	/* Helper functions */
